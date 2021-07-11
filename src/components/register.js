@@ -1,23 +1,31 @@
-import React, { useState } from "react";
+import axios from 'axios';
 import { Formik } from 'formik';
+import React, { useState } from "react";
 import DatePicker from 'react-native-datepicker';
 import { Button, TextInput, View, Picker } from 'react-native';
 
-const Register = () => {
+const Register = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('');
   const [date, setDate] = useState(new Date())
   return(
   <Formik
-     initialValues={{ email: '', password: '', name: '', confirm_passowrd: '' }}
-     onSubmit={values => console.log(values)}
+     initialValues={{ email: '', password: '', username: '', confirm_passowrd: '', branch: 'Temerari' }}
+     onSubmit={(values) => {
+       axios
+        .post('http://192.168.1.9:8000/api/auth/register/', values)
+        .then(response => {
+          navigation.navigate('Login');
+      })
+      .catch(error => console.log(error));
+    }}
    >
      {({ handleChange, handleBlur, handleSubmit, values }) => (
        <View>
          <TextInput
-           onChangeText={handleChange('name')}
+           onChangeText={handleChange('username')}
            placeholder="Nume"
-           onBlur={handleBlur('name')}
-           value={values.name}
+           onBlur={handleBlur('username')}
+           value={values.username}
          />
          <TextInput
            onChangeText={handleChange('email')}
