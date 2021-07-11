@@ -22,13 +22,16 @@ const Login = ({ navigation }) => {
         secureTextEntry={true}
         value={password}
       />
-      <View>
-        <Button
-          title = 'Login'
-          style = {styles.btnEnter}
-          onPress = {signIn(name, password, navigation)}>
-        </Button>
-      </View>
+      <Button
+        title = 'Login'
+        style = {styles.btnEnter}
+        onPress = {() => signIn(name, password, navigation)}>
+      </Button>
+      <Button
+        title = 'Register'
+        style = {styles.btnEnter}
+        onPress = {() => navigation.navigate('Register')}>
+      </Button>
     </SafeAreaView>
   );
 }
@@ -38,7 +41,7 @@ const Login = ({ navigation }) => {
 function signIn(name, user_password, navigation) {
   const payload = {username : name, password : user_password}
   axios
-    .post('', payload)
+    .post('http://192.168.1.9:8000/auth/login/', payload)
     .then(response => {
       const { token, user } = response.data;
       // We set the returned token as the default authorization header
