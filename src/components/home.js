@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Picker, StyleSheet } from "react-native";
 
-const App = () => {
+const App = ({navigation}, user) => {
   const [selectedValue, setSelectedValue] = useState("java");
   return (
     <View style={styles.container}>

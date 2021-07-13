@@ -1,16 +1,16 @@
 import axios from 'axios';
 import { Formik } from 'formik';
 import React, { useState } from "react";
-import DatePicker from 'react-native-datepicker';
-import { Button, TextInput, View, Picker } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import { Button, TextInput, View } from 'react-native';
 
 const Register = ({ navigation }) => {
-  const [selectedValue, setSelectedValue] = useState('');
-  const [date, setDate] = useState(new Date())
   return(
   <Formik
-     initialValues={{ email: '', password: '', username: '', confirm_passowrd: '', branch: 'Temerari' }}
+     initialValues={{ email: '', password: '', username: '', confirm_password: '', branch: 'Lupișori'}}
      onSubmit={(values) => {
+       if (values.password != values.confirm_password || values.password == '' || values.email == '' || values.username == '')
+        return;
        axios
         .post('http://192.168.1.9:8000/api/auth/register/', values)
         .then(response => {
@@ -48,9 +48,9 @@ const Register = ({ navigation }) => {
            value={values.confirm_password}
          />
         <Picker
-          selectedValue={selectedValue}
+          selectedValue={values.branch}
           style={{ height: 50, width: 150 }}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+          onValueChange={handleChange('branch')}
         >
           <Picker.Item label="Lupișori" value="Lupișori" />
           <Picker.Item label="Temerari" value="Temerari" />
@@ -58,11 +58,6 @@ const Register = ({ navigation }) => {
           <Picker.Item label="Seniori" value="Seniori" />
         </Picker>
 
-        <DatePicker
-          mode="date"
-          date={date}
-          onDateChnage={setDate}
-        />
          <Button onPress={handleSubmit} title="Submit" />
        </View>
      )}

@@ -12,7 +12,7 @@ const Navigation = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Sign In"
+          name="Login"
           component={Login}
           initial
         />
