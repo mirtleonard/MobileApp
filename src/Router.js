@@ -4,8 +4,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/auth/login.js';
 import Register from './components/auth/register.js';
 import Home from './components/profile/home.js';
+import EditActivityReport from './components/activityReport/editActivityReport.js'
 import ActivityReports from './components/activityReport/activityReports.js';
 import ActivityReport from './components/activityReport/activityReport.js';
+import EditEventReport from './components/eventReport/editEventReport.js';
 import EventReports from './components/eventReport/eventReports.js';
 import EventReport from './components/eventReport/eventReport.js';
 
@@ -43,6 +45,14 @@ const Navigation = () => {
         <Stack.Screen
           name="EventReport"
           component={EventReport}
+        />
+        <Stack.Screen
+          name="EditActivityReport"
+          component={EditActivityReport}
+        />
+        <Stack.Screen
+          name="EditEventReport"
+          component={EditEventReport}
         />
       </Stack.Navigator>
     </NavigationContainer>

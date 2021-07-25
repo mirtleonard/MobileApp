@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import React, { useState } from "react";
 import { Picker } from '@react-native-picker/picker';
-import { Button, Card } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { TextInput, View } from 'react-native';
 
 const Register = ({ navigation }) => {
@@ -23,26 +23,26 @@ const Register = ({ navigation }) => {
      {({ handleChange, handleBlur, handleSubmit, values }) => (
        <View>
          <Card>
-           <TextInput
+           <Input
              onChangeText={handleChange('username')}
              placeholder="Nume"
              onBlur={handleBlur('username')}
              value={values.username}
            />
-           <TextInput
+           <Input
              onChangeText={handleChange('email')}
              placeholder="Email"
              onBlur={handleBlur('email')}
              value={values.email}
            />
-           <TextInput
+           <Input
              onChangeText={handleChange('password')}
              secureTextEntry={true}
              placeholder="Parola"
              onBlur={handleBlur('password')}
              value={values.password}
            />
-           <TextInput
+           <Input
              onChangeText={handleChange('confirm_password')}
              secureTextEntry={true}
              placeholder="Confirmă parola"

@@ -1,9 +1,26 @@
 import React from 'react';
 import axios from 'axios';
 import { Button, Card } from 'react-native-elements';
-import {StyleSheet, Text, TextInput,View} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {StyleSheet, Text, TextInput,View, AsyncStorage} from 'react-native';
+
+async function storeToken(user) {
+  try {
+    await AsyncStorage.setItem('userData', JSON.stringify(user));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getToken(user) {
+  try {
+    let userData = await AsyncStorage.getItem('userData');
+    return JSON.parse(userData);
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 
 function signIn(name, user_password, navigation) {
   const payload = {username : name, password : user_password}
