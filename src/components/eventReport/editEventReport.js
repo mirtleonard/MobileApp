@@ -1,16 +1,15 @@
-import React from 'react';
-import * as ImagePicker from 'react-native-image-picker';
 import { Button } from 'react-native-elements';
 import { View } from 'react-native';
+import React from 'react';
 
 
 const App = () => {
-  const options = { mediaType: 'photo'};
+  const options = { noData: true, }
   return (
     <View>
       <Button
         title = 'choose image'
-        onPress = {() => ImagePicker.launchImageLibrary(options, response = (response) => {
+        onPress = {() => ImagePicker.launchImageLibrary(options, (response) => {
             console.log("response", response);
         })}>
       </Button>
