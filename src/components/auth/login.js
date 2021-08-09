@@ -25,7 +25,7 @@ async function getToken(user) {
 function signIn(name, user_password, navigation) {
   const payload = {username : name, password : user_password}
   axios
-    .post('http://192.168.0.103:8000/api/user/login/', payload)
+    .post('http://192.168.1.9:8000/api/user/login/', payload)
     .then(response => {
       const { token, user } = response.data;
       // We set the returned token as the default authorization header

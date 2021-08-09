@@ -1,5 +1,5 @@
 import { ScrollView, Text, StyleSheet } from 'react-native';
-import { Button, Input, Card } from 'react-native-elements';
+import { Button, Input, Card, Image } from 'react-native-elements';
 import * as ImagePicker from 'react-native-image-picker';
 import  DatePicker from 'react-native-datepicker';
 import { Formik } from 'formik';
@@ -22,6 +22,13 @@ const App = () => {
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <ScrollView>
           <Card>
+            <Card.Title style={{flexDirection: 'row'}}>
+              <Image source={require('../../assets/scout.png')}
+                style={{width:200, height:60}} />
+              <Image source={require('../../assets/logo.png')}
+                style={{width:70, height:70}} />
+            </Card.Title>
+            <Card.Divider/>
             <Input
                onChangeText={handleChange('title')}
                value={values.title}

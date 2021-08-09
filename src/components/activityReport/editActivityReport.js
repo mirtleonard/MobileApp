@@ -4,53 +4,65 @@ import FormData from 'form-data';
 import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'react-native-image-picker';
-import { Button, Card, Input } from 'react-native-elements';
 import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import { Button, Card, Input, Image } from 'react-native-elements';
 
 const options = {
   selectionLimit: 0,
   mediaType: 'photo',
 }
 
-function b64toFile(b64Data, contentType='', name) {
-  const Buffer = require('buffer/').Buffer;
-  const buffer = Buffer.from(b64Data, 'base64');
-  const blob = new Blob([buffer], {type: contentType});
-  const file = new File([blob], name)
-  console.log(file);
-  return file;
+function getValue(x) {
+  const {id, ...y} = x;
+  return y;
 }
 
 const App = (props) => {
-  const [path, setPath] = useState('');
   const data = new FormData();
+  const vari = props.route.params ? getValue(props.route.params) : {
+        branch: '',
+        areas: '',
+        title: '',
+        location: '',
+        duration: '',
+        participants: '',
+        materials: '',
+        goals: '',
+        //date: new Date(Date.now()),
+        description: '',
+        strengths: '',
+        weaknesses: '',
+        improvements: '',
+    }
   return(
     <Formik
-       initialValues={{ username: 'admin', branch: 'Lupișori', area: 'intelectuală', title: '', location: '',
-          duration: '', participants: '', materials: '', goals: '', date: '02.07.2002',
-          description: '', strengths: '', weaknesses: '', improvements: ''
-       }}
-
+       initialValues={vari}
        onSubmit={(values) => {
-         if (data._parts[0]) {
-          axios.post('http://192.168.0.103:8000/api/file/',  data, {
-            'Content-Type': 'multipart/form-data'})
-          .then(response => {
-            console.log(response);
-          }).catch(error => console.log(error));
-            props.navigation.navigate('Home');
-        }
         console.log(values);
-        axios.post('http://192.168.0.103:8000/api/activityReport/', values)
+        axios.post('http://192.168.1.9:8000/api/activityReport/', values)
         .then(response => {
-          console.log(response);
+          if (data._parts[0]) {
+            data.append('id', response.data.id);
+            axios.post('http://192.168.1.9:8000/api/file/',  data, {
+              'Content-Type': 'multipart/form-data'})
+              .then(response => {
+                console.log(response);
+              }).catch(error => console.log(error));
+          }
         }).catch(error => console.log(error));
-
+        props.navigation.navigate('Home');
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <ScrollView>
           <Card>
+            <Card.Title style={{flexDirection: 'row'}}>
+              <Image source={require('../../assets/scout.png')}
+                style={{width:200, height:60}} />
+              <Image source={require('../../assets/logo.png')}
+                style={{width:70, height:70}} />
+            </Card.Title>
+            <Card.Divider/>
             <Picker
               onValueChange={handleChange('branch')}
               selectedValue={values.branch}
@@ -63,8 +75,8 @@ const App = (props) => {
             </Picker>
 
             <Picker
-              onValueChange={handleChange('area')}
-              selectedValue={values.area}
+              onValueChange={handleChange('areas')}
+              selectedValue={values.areas}
               label = 'Arie de dezvoltare'
               style={{
 

@@ -8,7 +8,7 @@ function getReports(navigation, url){
     .get(url)
     .then(response => {
       const reports = response.data;
-      if (url == 'http://192.168.0.103:8000/api/activityReport')
+      if (url == 'http://192.168.1.9:8000/api/activityReport')
         navigation.navigate('ActivityReports', {reports});
       else
         navigation.navigate('EventReports', {reports});
@@ -22,11 +22,11 @@ const App = ({navigation}) => {
       <Card>
         <Button
           title = 'See activity reports'
-          onPress = {() => getReports(navigation, 'http://192.168.0.103:8000/api/activityReport')}>
+          onPress = {() => getReports(navigation, 'http://192.168.1.9:8000/api/activityReport')}>
         </Button>
         <Button
           title = 'See event reports'
-          onPress = {() => getReports(navigation, 'http://192.168.0.103:8000/api/eventReport')}>
+          onPress = {() => getReports(navigation, 'http://192.168.1.9:8000/api/eventReport')}>
         </Button>
         <Button
           title = 'Edit activity reports'
