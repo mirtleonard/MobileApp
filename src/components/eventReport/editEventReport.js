@@ -6,17 +6,45 @@ import { Formik } from 'formik';
 import axios from 'axios';
 import React from 'react';
 
+const options = {
+  selectionLimit: 0,
+  mediaType: 'photo',
+}
 
-const App = () => {
-  const options = { selectionLimit: 0, }
+function getValue(x) {
+  const {id, ...y} = x;
+  return y;
+}
+
+const App = (props) => {
+  const form = new FormData();
+  const data = props.route.params ? getValue(props.route.params) : {
+        username: 'admin',
+        center: 'Centrul Local AMD Pildești',
+        eventType: 'Local, Regional, Național, Internațional',
+        title: '',
+        location: '',
+        members: '',
+        description: '',
+    }
   return (
     <Formik
-        initialValues={{ username: 'admin', branch: 'Lupișori', area: 'intelectuală', title: '', location: '',
-          duration: '', participants: '', materials: '', goals: '', date: new Date(),
-          description: '', strengths: '', weaknesses: '', improvements: ''
-       }}
-       onSubmit={(values) => {
-         console.log(values);
+        initialValues={data}
+        onSubmit={(values) => {
+        axios.post('http://192.168.1.9:8000/api/eventReport/', values)
+        .then(response => {
+          console.log(response);
+          if (form._parts[0]) {
+            form.append('type', 'event');
+            form.append('id', response.data.id);
+            axios.post('http://192.168.1.9:8000/api/file/',  form, {
+              'Content-Type': 'multipart/form-data'})
+              .then(response => {
+                console.log(response);
+              }).catch(error => console.log(error));
+          }
+        //props.navigation.navigate('Home');
+        }).catch(error => console.log(error));
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -30,44 +58,51 @@ const App = () => {
             </Card.Title>
             <Card.Divider/>
             <Input
-               onChangeText={handleChange('title')}
-               value={values.title}
+               onChangeText={handleChange('center')}
+               value={values.center}
                label='Centru'
             />
             <Input
-               onChangeText={handleChange('duration')}
-               value={values.duration}
-               label="Titlu"
+               onChangeText={handleChange('title')}
+               value={values.title}
+               label='Titlu'
             />
             <Input
-               onChangeText={handleChange('duration')}
-               value={values.duration}
-               label="Participanți"
+               onChangeText={handleChange('EventType')}
+               value={values.EventType}
+               label='Tip de eveniment'
+            />
+            <Input
+               onChangeText={handleChange('members')}
+               value={values.members}
+               label='Participanți'
             />
             <Input
                onChangeText={handleChange('location')}
                value={values.location}
-               label="Locație"
+               label='Locație'
             />
             <Input
-               onChangeText={handleChange('duration')}
-               value={values.duration}
-               label="Descriere"
+               onChangeText={handleChange('description')}
+               value={values.description}
+               label='Descriere'
                multiline
             />
             <Button
               title = 'choose image'
               onPress = {() => ImagePicker.launchImageLibrary(options, (response) => {
-                  axios.post('http://192.168.1.9:8000/api/activityReport/', response.assets)
-                  .then(response => {
-                    console.log(response);
-                  }).catch(error => console.log(error));
-              })}>
-            </Button>
+                for (const x in response.assets)
+                    form.append('files', {
+                      'uri' : response.assets[x].uri,
+                      'name' : response.assets[x].fileName,
+                      'type' : response.assets[x].type,
+                    });
+              })}
+              />
             <Button
               onPress={handleSubmit}
-              title = "Adaugă Raport" >
-            </Button>
+              title = 'Adaugă Raport'
+            />
           </Card>
         </ScrollView>
       )}

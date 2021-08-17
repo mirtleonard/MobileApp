@@ -1,50 +1,45 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, Card } from 'react-native-elements';
+import styles from './css.js';
+import { AuthDispatch } from './context.js';
+import * as SecureStore from 'expo-secure-store';
+import { Button, Card, Text } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
-import {StyleSheet, Text, TextInput,View, AsyncStorage} from 'react-native';
-
-async function storeToken(user) {
-  try {
-    await AsyncStorage.setItem('userData', JSON.stringify(user));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getToken(user) {
-  try {
-    let userData = await AsyncStorage.getItem('userData');
-    return JSON.parse(userData);
-  } catch(error) {
-    console.log(error);
-  }
-}
+import { TextInput, View, AsyncStorage, Alert } from 'react-native';
 
 
-function signIn(name, user_password, navigation) {
-  const payload = {username : name, password : user_password}
+async function signIn(name, user_password, dispatch) {
+  dispatch({type: "REQUEST_LOGIN"})
+  const payload = { username : name, password : user_password };
   axios
     .post('http://192.168.1.9:8000/api/user/login/', payload)
     .then(response => {
       const { token, user } = response.data;
-      // We set the returned token as the default authorization header
+      SecureStore.setItemAsync('user', JSON.stringify(user) || "");
+      SecureStore.setItemAsync('token', token);
       axios.defaults.headers.common.Authorization = `Token ${token}`;
-      navigation.navigate('Home');
+      dispatch({type: "LOGIN_SUCCESS", user : user, token: token});
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      Alert.alert("Eroare", "Datele introduse sunt incorecte!");
+      console.log(error);
+    });
 }
 
+
+
 const Login = ({ navigation }) => {
+  const dispatch = React.useContext(AuthDispatch);
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
+
   return(
     <View style={styles.container}>
       <Card>
         <TextInput
           style={styles.input}
           placeholder="Nume"
-          onChangeText={setName}
+          onChangeText={setName }
           value={name}
         />
         <TextInput
@@ -57,47 +52,11 @@ const Login = ({ navigation }) => {
         <Button
           title = 'Login'
           style = {styles.btnEnter}
-          onPress = {() => signIn(name, password, navigation)}>
-        </Button>
-        <Button
-          title = 'Register'
-          style = {styles.btnEnter}
-          onPress = {() => navigation.navigate('Register')}>
-        </Button>
+          onPress = {async () => signIn(name, password, dispatch)}
+        />
       </Card>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container : {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  input: {
-    margin:15,
-    height:40,
-    padding: 5,
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#428AF8',
-  },
-  btnEnter: {
-    justifyContent : 'center',
-    flexDirection: 'row',
-    backgroundColor: '#42BAF8',
-    alignItems: 'center',
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 10,
-    padding: 10,
-  }
-});
 
 export default Login;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Button, Card } from 'react-native-elements';
 import { View, StyleSheet } from 'react-native';
+import { Button, Card, Text } from 'react-native-elements';
 
 function getReports(navigation, url){
   axios
@@ -19,24 +19,7 @@ function getReports(navigation, url){
 const App = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <Card>
-        <Button
-          title = 'See activity reports'
-          onPress = {() => getReports(navigation, 'http://192.168.1.9:8000/api/activityReport')}>
-        </Button>
-        <Button
-          title = 'See event reports'
-          onPress = {() => getReports(navigation, 'http://192.168.1.9:8000/api/eventReport')}>
-        </Button>
-        <Button
-          title = 'Edit activity reports'
-          onPress = {() => navigation.navigate('EditActivityReport')}>
-        </Button>
-        <Button
-          title = 'Edit event reports'
-          onPress = {() => navigation.navigate('EditEventReport')}>
-        </Button>
-      </Card>
+      <Text h3> Welcome </Text>
     </View>
   );
 }

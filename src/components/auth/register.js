@@ -21,7 +21,11 @@ const Register = ({ navigation }) => {
     }}
    >
      {({ handleChange, handleBlur, handleSubmit, values }) => (
-       <View>
+       <View style = {{
+          flex: 1,
+          justifyContent: 'center',
+          backgroundColor: '#F5FCFF',
+        }}>
          <Card>
            <Input
              onChangeText={handleChange('username')}

@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React from 'react';
+import { AuthState } from '../auth/context';
 import { Button, Card, Image, Text } from 'react-native-elements';
-import { ScrollView, StyleSheet, FlatList } from "react-native";
+import { ScrollView, StyleSheet, FlatList, Alert } from "react-native";
 
 const App = (props) => {
   const report = props.route.params;
+  const data = React.useContext(AuthState);
   return (
     <ScrollView>
       <Card>
@@ -30,15 +32,25 @@ const App = (props) => {
         <Text> <Text style={styles.boldText}> Raport realizat de: </Text> <Text style={styles.text}> {report.username} {'\n'} </Text> </Text>
         <Card.Divider/>
         <Button
-          onPress={() => props.navigation.navigate('EditActivityReport', report)}
+          onPress={() => {
+            if (report.username == data.user.username)
+              props.navigation.navigate('EditActivityReport', report);
+            else
+              Alert.alert("Eroare", "Doar creatorul poate edita!");
+          }}
           title="Editează"
         />
         <Button
-          onPress={() => axios.delete('http://192.168.1.9:8000/api/activityReport/' + report.id + '/')
+          onPress={() => {
+            if (report.username == data.user.username) {
+              axios.delete('http://192.168.1.9:8000/api/activityReport/' + report.id + '/')
               .then(response => {
-                props.navigation.navigate('Home');
-              }).catch(error => console.log(error))
-          }
+                  props.navigation.navigate('Meniu');
+              }).catch(error => {
+                console.log(error)
+            })} else {
+              Alert.alert("Eroare", "Doar creatorul poate edita!");
+            }}}
           title="Șterge"
         />
       </Card>

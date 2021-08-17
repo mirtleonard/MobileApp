@@ -2,10 +2,11 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import FormData from 'form-data';
 import React, { useState } from 'react';
+import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'react-native-image-picker';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
-import { Button, Card, Input, Image } from 'react-native-elements';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Button, Card, Text, Input, Image } from 'react-native-elements';
 
 const options = {
   selectionLimit: 0,
@@ -18,39 +19,50 @@ function getValue(x) {
 }
 
 const App = (props) => {
-  const data = new FormData();
-  const vari = props.route.params ? getValue(props.route.params) : {
-        branch: '',
-        areas: '',
+  const form = new FormData();
+  const data = props.route.params ? getValue(props.route.params) : {
+        username: 'admin',
+        branch: 'Lupișori',
+        areas: 'intelectuală',
         title: '',
         location: '',
         duration: '',
         participants: '',
         materials: '',
         goals: '',
-        //date: new Date(Date.now()),
+        date: new Date(Date.now()),
         description: '',
         strengths: '',
         weaknesses: '',
         improvements: '',
     }
+  console.log(data, 'aici');
   return(
     <Formik
-       initialValues={vari}
+       initialValues={data}
        onSubmit={(values) => {
-        console.log(values);
         axios.post('http://192.168.1.9:8000/api/activityReport/', values)
         .then(response => {
-          if (data._parts[0]) {
-            data.append('id', response.data.id);
-            axios.post('http://192.168.1.9:8000/api/file/',  data, {
+          if (form._parts[0]) {
+            form.append('type', 'activity');
+            form.append('id', response.data.id);
+            axios.post('http://192.168.1.9:8000/api/file/',  form, {
               'Content-Type': 'multipart/form-data'})
               .then(response => {
                 console.log(response);
               }).catch(error => console.log(error));
           }
-        }).catch(error => console.log(error));
-        props.navigation.navigate('Home');
+        let parent = props.navigation.getParent();
+        console.log(parent.getParent());
+        if (parent) {
+          //parent =  parent.getParent()
+          parent.jumpTo('Profile');
+        } else
+          props.navigation.navigate('Meniu');
+        }).catch(error => {
+          console.log(error);
+          Alert.alert("Eroare", "Nu ați introdus toate datele!");
+        });
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -102,6 +114,12 @@ const App = (props) => {
             }}>
               Data:
             </Text>
+            <DatePicker
+              date={values.date}
+              mode="date"
+              placeholder="Data"
+              onDateChange={handleChange('date')}
+            />
             <Input
                onChangeText={handleChange('location')}
                value={values.location}
@@ -158,7 +176,7 @@ const App = (props) => {
             title='choose image'
             onPress={() => ImagePicker.launchImageLibrary(options, (response) => {
                 for (const x in response.assets)
-                    data.append('files', {
+                    form.append('files', {
                       'uri' : response.assets[x].uri,
                       'name' : response.assets[x].fileName,
                       'type' : response.assets[x].type,
