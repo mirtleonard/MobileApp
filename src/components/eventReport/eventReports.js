@@ -1,21 +1,23 @@
 import axios from 'axios';
 import Reports from "../../Router.js";
 import React, { useState } from "react";
+import { Updates } from '../../Router.js';
 import { Button, Card } from 'react-native-elements';
 import { View, StyleSheet, FlatList, Text } from "react-native";
 
-function getActivityReport(navigation, id) {
+function getEventReport(navigation, id) {
     axios
     .get('http://192.168.1.9:8000/api/eventReport/' + id)
     .then(response => {
       const report = response.data;
-      navigation.navigate('EventReport', report);
+      navigation.navigate('ViewEventReport', report);
     })
     .catch(error => console.log(error));
 }
 
 const App = (props) => {
   let [reports, setReports] = React.useState();
+  const {updated} = React.useContext(Updates);
   React.useEffect(async () => {
     try {
         axios.get('http://192.168.1.9:8000/api/eventReport')
@@ -25,15 +27,18 @@ const App = (props) => {
     } catch(error) {
         console.log(error);
     }
-  }, []);
+  }, [updated]);
 
   const Item = ({ item }) => (
     <Card>
       <Card.Title> { item.title } </Card.Title>
-      <Text>  { item.center }  </Text>
+      <Card.Divider/>
+      <Text style={ {textAlign: 'center'}}>  { item.beginingDate }  </Text>
+      <Text style={ {textAlign: 'center'}}>  { item.eventType }  </Text>
       <Button
+        type='clear'
         title = 'See report'
-        onPress = {() => getActivityReport(props.navigation, item.id)}>
+        onPress = {() => getEventReport(props.navigation.getParent(), item.id)}>
       </Button>
     </Card>
   );

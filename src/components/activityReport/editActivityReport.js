@@ -2,16 +2,13 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import FormData from 'form-data';
 import React, { useState } from 'react';
+import { Dates } from '../../Router.js';
+import { Updates } from '../../Router.js';
 import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'react-native-image-picker';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button, Card, Text, Input, Image } from 'react-native-elements';
-
-const options = {
-  selectionLimit: 0,
-  mediaType: 'photo',
-}
 
 function getValue(x) {
   const {id, ...y} = x;
@@ -19,7 +16,9 @@ function getValue(x) {
 }
 
 const App = (props) => {
+  const { updated, setUpdated } = React.useContext(Updates);
   const form = new FormData();
+  const id =  props.route.params ?  JSON.stringify(props.route.params.id) + '/' : '';
   const data = props.route.params ? getValue(props.route.params) : {
         username: 'admin',
         branch: 'Lupișori',
@@ -36,12 +35,11 @@ const App = (props) => {
         weaknesses: '',
         improvements: '',
     }
-  console.log(data, 'aici');
   return(
     <Formik
        initialValues={data}
        onSubmit={(values) => {
-        axios.post('http://192.168.1.9:8000/api/activityReport/', values)
+        axios({method: id ? 'put' : 'post', url: 'http://192.168.1.9:8000/api/activityReport/' + id, data : values})
         .then(response => {
           if (form._parts[0]) {
             form.append('type', 'activity');
@@ -52,8 +50,8 @@ const App = (props) => {
                 console.log(response);
               }).catch(error => console.log(error));
           }
+        setUpdated(!updated);
         let parent = props.navigation.getParent();
-        console.log(parent.getParent());
         if (parent) {
           //parent =  parent.getParent()
           parent.jumpTo('Profile');
@@ -173,19 +171,21 @@ const App = (props) => {
                multiline
             />
             <Button
-            title='choose image'
-            onPress={() => ImagePicker.launchImageLibrary(options, (response) => {
-                for (const x in response.assets)
-                    form.append('files', {
-                      'uri' : response.assets[x].uri,
-                      'name' : response.assets[x].fileName,
-                      'type' : response.assets[x].type,
-                    });
-            })}
+              title='choose image'
+              type='clear'
+              onPress={() => ImagePicker.launchImageLibrary({ selectionLimit: 0, mediaType: 'photo',},
+                (response) => {
+                  for (const x in response.assets)
+                      form.append('files', {
+                        'uri' : response.assets[x].uri,
+                        'name' : response.assets[x].fileName,
+                        'type' : response.assets[x].type,
+                      });
+              })}
             />
             <Button
                 onPress={handleSubmit}
-                title = "Adaugă Raport"
+                title="Adaugă Raport"
             />
           </Card>
         </ScrollView>

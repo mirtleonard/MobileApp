@@ -1,11 +1,16 @@
 import axios from 'axios';
 import React from 'react';
+import { Updates } from '../../Router';
+import { AuthState } from '../../Router';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import { Button, Card, Image, Text } from 'react-native-elements';
-import { ScrollView, StyleSheet, FlatList } from "react-native";
+import { ScrollView, StyleSheet, FlatList, View, Alert } from "react-native";
 
 const App = (props) => {
   const report = props.route.params;
-  console.log(report);
+  const data = React.useContext(AuthState);
+  const [show, setShow] = React.useState(false);
+  const {updated, setUpdated} = React.useContext(Updates);
   return (
     <ScrollView>
       <Card>
@@ -26,18 +31,72 @@ const App = (props) => {
         <Text> <Text style={styles.boldText}> Data de sfârșit: </Text> <Text style={styles.text}> {report.endDate} {'\n'} </Text> </Text>
         <Text> <Text style={styles.boldText}> Raport realizat de: </Text> <Text style={styles.text}> {report.username} {'\n'} </Text> </Text>
         <Card.Divider/>
-        <Button
-          onPress={() => props.navigation.navigate('EditEventReport', report)}
-          title="Editează"
+        <AwesomeAlert
+          show={show}
+          showProgress={true}
+          title={report.title}
+          message="Sigur vrei să ștergi raportul?"
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Anulează"
+          confirmText="Șterge"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+              setShow(false);
+          }}
+          onConfirmPressed={() => {
+            setShow(false);
+            axios.delete('http://192.168.1.9:8000/api/eventReport/' + report.id + '/')
+                .then(response => {
+                    setUpdated(!updated);
+                    props.navigation.navigate('Meniu');
+                }).catch(error => {
+                  console.log(error)
+            });
+          }}
         />
-        <Button
-          onPress={() => axios.delete('http://192.168.1.9:8000/api/eventReport/' + report.id + '/')
-              .then(response => {
-                props.navigation.navigate('Home');
-              }).catch(error => console.log(error))
-          }
-          title="Șterge"
-        />
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <Button
+            buttonStyle ={{
+              margin: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              borderRadius: 5,
+              backgroundColor: "#AEDEF4",
+
+            }}
+            onPress={() => {
+              if (report.username == data.user.username)
+                props.navigation.navigate('EditEventReport', report);
+              else
+                Alert.alert("Eroare", "Doar creatorul poate edita!");
+            }}
+            title="Editează"
+          />
+          <Button
+            color='#fc0303'
+            buttonStyle ={{
+              margin: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              borderRadius: 5,
+              backgroundColor: 'red',
+            }}
+            onPress={() => {
+              if (report.username == data.user.username) {
+                setShow(true);
+              } else {
+                Alert.alert("Eroare", "Doar creatorul poate edita!");
+              }}}
+            title="Șterge"
+          />
+          </View>
       </Card>
     </ScrollView>
   );

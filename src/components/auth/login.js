@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import styles from './css.js';
-import { AuthDispatch } from './context.js';
+import { AuthDispatch } from '../../Router.js';;
 import * as SecureStore from 'expo-secure-store';
 import { Button, Card, Text } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';

@@ -1,15 +1,12 @@
-import { ScrollView, Text, StyleSheet } from 'react-native';
 import { Button, Input, Card, Image } from 'react-native-elements';
+import { ScrollView, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import  DatePicker from 'react-native-datepicker';
+import { Updates } from '../../Router.js';
 import { Formik } from 'formik';
 import axios from 'axios';
 import React from 'react';
 
-const options = {
-  selectionLimit: 0,
-  mediaType: 'photo',
-}
 
 function getValue(x) {
   const {id, ...y} = x;
@@ -17,7 +14,9 @@ function getValue(x) {
 }
 
 const App = (props) => {
+  const { updated, setUpdated } = React.useContext(Updates);
   const form = new FormData();
+  const id =  props.route.params ?  JSON.stringify(props.route.params.id) + '/' : '';
   const data = props.route.params ? getValue(props.route.params) : {
         username: 'admin',
         center: 'Centrul Local AMD Pildești',
@@ -31,9 +30,8 @@ const App = (props) => {
     <Formik
         initialValues={data}
         onSubmit={(values) => {
-        axios.post('http://192.168.1.9:8000/api/eventReport/', values)
+        axios({method: id ? 'put' : 'post', 'url': 'http://192.168.1.9:8000/api/eventReport/' + id, 'data': values})
         .then(response => {
-          console.log(response);
           if (form._parts[0]) {
             form.append('type', 'event');
             form.append('id', response.data.id);
@@ -43,8 +41,15 @@ const App = (props) => {
                 console.log(response);
               }).catch(error => console.log(error));
           }
-        //props.navigation.navigate('Home');
+        setUpdated(!updated);
+        let parent = props.navigation.getParent();
+        if (parent) {
+          //parent =  parent.getParent()
+          parent.jumpTo('Profile');
+        } else
+          props.navigation.navigate('Meniu');
         }).catch(error => console.log(error));
+          Alert.alert("Eroare", "Nu ați introdus toate datele!");
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -68,8 +73,8 @@ const App = (props) => {
                label='Titlu'
             />
             <Input
-               onChangeText={handleChange('EventType')}
-               value={values.EventType}
+               onChangeText={handleChange('eventType')}
+               value={values.eventType}
                label='Tip de eveniment'
             />
             <Input
@@ -90,7 +95,9 @@ const App = (props) => {
             />
             <Button
               title = 'choose image'
-              onPress = {() => ImagePicker.launchImageLibrary(options, (response) => {
+              type='clear'
+              onPress = {() => ImagePicker.launchImageLibrary({selectionLimit: 0, mediaType: 'photo',},
+              (response) => {
                 for (const x in response.assets)
                     form.append('files', {
                       'uri' : response.assets[x].uri,

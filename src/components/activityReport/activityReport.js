@@ -1,12 +1,16 @@
 import axios from 'axios';
 import React from 'react';
-import { AuthState } from '../auth/context';
-import { Button, Card, Image, Text } from 'react-native-elements';
-import { ScrollView, StyleSheet, FlatList, Alert } from "react-native";
+import { Updates } from '../../Router';
+import { AuthState } from '../../Router';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { Card, Image, Text, Button } from 'react-native-elements';
+import { ScrollView, StyleSheet, FlatList, Alert, View } from "react-native";
 
 const App = (props) => {
   const report = props.route.params;
   const data = React.useContext(AuthState);
+  const [show, setShow] = React.useState(false);
+  const {updated, setUpdated} = React.useContext(Updates);
   return (
     <ScrollView>
       <Card>
@@ -31,28 +35,72 @@ const App = (props) => {
         <Text> <Text style={styles.boldText}> Îmbunătățiri:{'\n'} </Text> <Text style={styles.text}> {report.improvements} {'\n'} </Text> </Text>
         <Text> <Text style={styles.boldText}> Raport realizat de: </Text> <Text style={styles.text}> {report.username} {'\n'} </Text> </Text>
         <Card.Divider/>
-        <Button
-          onPress={() => {
-            if (report.username == data.user.username)
-              props.navigation.navigate('EditActivityReport', report);
-            else
-              Alert.alert("Eroare", "Doar creatorul poate edita!");
+        <AwesomeAlert
+          show={show}
+          showProgress={false}
+          title={report.title}
+          message="Sigur vrei să ștergi raportul?"
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Anulează"
+          confirmText="Șterge"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+              setShow(false);
           }}
-          title="Editează"
+          onConfirmPressed={() => {
+            setShow(false);
+            axios.delete('http://192.168.1.9:8000/api/activityReport/' + report.id + '/')
+                .then(response => {
+                    setUpdated(!updated);
+                    props.navigation.navigate('Meniu');
+                }).catch(error => {
+                  console.log(error)
+            });
+          }}
         />
-        <Button
-          onPress={() => {
-            if (report.username == data.user.username) {
-              axios.delete('http://192.168.1.9:8000/api/activityReport/' + report.id + '/')
-              .then(response => {
-                  props.navigation.navigate('Meniu');
-              }).catch(error => {
-                console.log(error)
-            })} else {
-              Alert.alert("Eroare", "Doar creatorul poate edita!");
-            }}}
-          title="Șterge"
-        />
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <Button
+            buttonStyle ={{
+              margin: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              borderRadius: 5,
+              backgroundColor: "#AEDEF4",
+
+            }}
+            onPress={() => {
+              if (report.username == data.user.username)
+                props.navigation.navigate('EditActivityReport', report);
+              else
+                Alert.alert("Eroare", "Doar creatorul poate edita!");
+            }}
+            title="Editează"
+          />
+          <Button
+            color='#fc0303'
+            buttonStyle ={{
+              margin: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              borderRadius: 5,
+              backgroundColor: 'red',
+            }}
+            onPress={() => {
+              if (report.username == data.user.username) {
+                setShow(true);
+              } else {
+                Alert.alert("Eroare", "Doar creatorul poate edita!");
+              }}}
+            title="Șterge"
+          />
+          </View>
       </Card>
     </ScrollView>
   );

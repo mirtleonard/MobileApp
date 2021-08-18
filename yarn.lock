@@ -6418,6 +6418,13 @@
   "resolved" "https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz"
   "version" "3.0.4"
 
+"react-native-awesome-alerts@^1.5.2":
+  "integrity" "sha512-PPTzKLpwDKbjeghvrRkg7OunND4C7d4bQORVLBnhqUK2z2PfZiI3UCULU0tczzeOyavv5hVSrYNXKPXlvhfmVg=="
+  "resolved" "https://registry.npmjs.org/react-native-awesome-alerts/-/react-native-awesome-alerts-1.5.2.tgz"
+  "version" "1.5.2"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-native-axios@^0.17.1":
   "integrity" "sha1-RCkpUKoHzu4uS9NJEG/3c774H48="
   "resolved" "https://registry.npmjs.org/react-native-axios/-/react-native-axios-0.17.1.tgz"

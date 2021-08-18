@@ -12,7 +12,7 @@ import Register from './components/auth/register.js';
 import * as SecureStore from 'expo-secure-store';
 import Home from './components/profile/home.js';
 import Login from './components/auth/login.js';
-import { Button, View } from 'react-native';
+import { Button, View, Text } from 'react-native';
 import { createDrawerNavigator,
          DrawerItem,
          DrawerItemList,
@@ -24,8 +24,10 @@ import axios from 'axios';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createMaterialTopTabNavigator();
+export const Updates = React.createContext();
 export const LogOutState = React.createContext();
-//export const Updates = React.createContext();
+export const AuthState = React.createContext();
+export const AuthDispatch = React.createContext();
 
 const SplashScreen = () => {
   return (
@@ -80,7 +82,7 @@ const CustomDrawer = (props) => {
 
 const MyDrawer = () => {
   return(
-    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />} >
+    <Drawer.Navigator screenOptions = {{headerShow: false}} drawerContent={(props) => <CustomDrawer {...props} />} >
       <Drawer.Screen name="Profile" component={ Home } />
       <Drawer.Screen name="CreateReport" component={ CreateReport } />
       <Drawer.Screen name="ViewReports" component={ ViewReports } />
@@ -90,16 +92,12 @@ const MyDrawer = () => {
 
 
 const MyStack = () => {
-  let user = React.useContext(Context.AuthState);
+  let user = React.useContext(AuthState);
   return (
     <NavigationContainer>
     {
-      user.loding ? (
-        <Stack.Navigator>
-          <Stack.Screen name="Loading" component= { SplashScreen } />
-        </Stack.Navigator>
-      ) : user.token ? (
-        <Stack.Navigator>
+      user.token ? (
+        <Stack.Navigator screenOptions = {{headerShow: false}} >
           <Stack.Screen name="Meniu" component={MyDrawer} />
           <Stack.Screen name="ViewActivityReport" component={ ActivityReport } />
           <Stack.Screen name="ViewEventReport" component={ EventReport } />
@@ -107,7 +105,7 @@ const MyStack = () => {
           <Stack.Screen name="EditEventReport" component={EditEventReport} />
         </Stack.Navigator>
       ) : (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions = {{headerShow: false}}>
           <Stack.Screen name="Auth" component={Auth} />
         </Stack.Navigator>
       )
@@ -119,6 +117,7 @@ const MyStack = () => {
 export default function Navigation () {
   const [data, dispatch] = React.useReducer(Context.AuthReducer, Context.initialState);
   const [logedOut, setLogedOut] = React.useState(false);
+  const [updated, setUpdated] = React.useState(false);
   React.useEffect(async () => {
     let currentUser, currentToken;
     try {
@@ -131,12 +130,14 @@ export default function Navigation () {
     }
   },[logedOut]);
   return (
-    <LogOutState.Provider value = {setLogedOut}>
-      <Context.AuthState.Provider value = {data}>
-        <Context.AuthDispatch.Provider value = {dispatch}>
-          <MyStack/>
-        </Context.AuthDispatch.Provider>
-      </Context.AuthState.Provider>
-    </LogOutState.Provider>
+    <Updates.Provider value = { {updated, setUpdated} }>
+      <LogOutState.Provider value = {setLogedOut}>
+        <AuthState.Provider value = {data}>
+          <AuthDispatch.Provider value = {dispatch}>
+            <MyStack/>
+          </AuthDispatch.Provider>
+        </AuthState.Provider>
+      </LogOutState.Provider>
+    </Updates.Provider>
   );
 }
