@@ -2,7 +2,7 @@ import axios from 'axios';
 import Reports from "../../Router.js";
 import React, { useState } from "react";
 import { Updates } from '../../Router.js';
-import { Button, Card } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { View, StyleSheet, FlatList, Text } from "react-native";
 
 function getEventReport(navigation, id) {
@@ -16,7 +16,9 @@ function getEventReport(navigation, id) {
 }
 
 const App = (props) => {
-  let [reports, setReports] = React.useState();
+  const [reports, setReports] = React.useState();
+  const [title, setTitle] = React.useState('');
+  const [username, setUsername] = React.useState('');
   const {updated} = React.useContext(Updates);
   React.useEffect(async () => {
     try {
@@ -42,13 +44,45 @@ const App = (props) => {
       </Button>
     </Card>
   );
+
+  function filter(data) {
+    let filtered = [];
+    for (const x in data) {
+      if (data[x].title.toUpperCase().includes(title.toUpperCase()))
+        if (data[x].username.toUpperCase().includes(username.toUpperCase()))
+          filtered.push(data[x]);
+    }
+    return filtered;
+  }
+
+const Filter = () => {
+  return(
+      <Card>
+        <Card.Title style={{textAlign: 'center'}}>
+          Filtre
+        </Card.Title>
+        <Input
+           onChangeText={setUsername}
+           value={username}
+           label="Creator"
+        />
+        <Input
+           onChangeText={setTitle}
+           value={title}
+           label="Titlu"
+        />
+      </Card>
+    );
+}
+
   const renderItem = ({ item }) => (
     <Item item = { item } />
   );
   return (
     <View>
       <FlatList
-        data = { reports }
+        ListHeaderComponent={Filter}
+        data = { filter(reports) }
         renderItem = { renderItem }
       />
     </View>

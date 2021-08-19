@@ -16,6 +16,8 @@ function getValue(x) {
 }
 
 const App = (props) => {
+  let date = new Date(Date.now());
+  date = new Date();
   const { updated, setUpdated } = React.useContext(Updates);
   const form = new FormData();
   const id =  props.route.params ?  JSON.stringify(props.route.params.id) + '/' : '';
@@ -29,7 +31,7 @@ const App = (props) => {
         participants: '',
         materials: '',
         goals: '',
-        date: new Date(Date.now()),
+        date: new Date('2021-01-01'),
         description: '',
         strengths: '',
         weaknesses: '',
@@ -39,7 +41,6 @@ const App = (props) => {
     <Formik
        initialValues={data}
        onSubmit={(values) => {
-         console.log(values.date, 'aha');
         axios({method: id ? 'put' : 'post', url: 'http://192.168.1.9:8000/api/activityReport/' + id, data : values})
         .then(response => {
           if (form._parts[0]) {
@@ -57,7 +58,7 @@ const App = (props) => {
           //parent =  parent.getParent()
           parent.jumpTo('Profile');
         } else
-          props.navigation.navigate('Meniu');
+          props.navigation.navigate('Dashboard');
         }).catch(error => {
           console.log(error);
           Alert.alert("Eroare", "Nu ați introdus toate datele!");
@@ -118,7 +119,8 @@ const App = (props) => {
             <DatePicker
               value={values.date}
               mode="date"
-              onChange={handleChange('date')}
+              name='date'
+              onChange={handleChange}
             />
             <Input
                onChangeText={handleChange('location')}
@@ -177,6 +179,7 @@ const App = (props) => {
             </Text>
             <Button
               title='choose image'
+              buttonStyle={{padding:20}}
               type='clear'
               onPress={() => ImagePicker.launchImageLibrary({ selectionLimit: 0, mediaType: 'photo',},
                 (response) => {

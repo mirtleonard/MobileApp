@@ -51,7 +51,7 @@ const App = (props) => {
             axios.delete('http://192.168.1.9:8000/api/eventReport/' + report.id + '/')
                 .then(response => {
                     setUpdated(!updated);
-                    props.navigation.navigate('Meniu');
+                    props.navigation.navigate('Dashboard');
                 }).catch(error => {
                   console.log(error)
             });

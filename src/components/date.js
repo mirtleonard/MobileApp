@@ -5,14 +5,16 @@ import {StyleSheet, View, Text, Platform} from 'react-native';
 
 
 const App = (props) => {
+  const [date, setDate] = React.useState(new Date(props.value));
   const [isPickerShow, setIsPickerShow] = React.useState(false);
-  const [date, setDate] = React.useState(new Date(Date.now()));
+  React.useEffect(() => props.onChange({target: {name: 'date', value: date}}),[]);
 
   const changePickerState = () => {
     setIsPickerShow(!isPickerShow);
   };
 
   const onChange = (value) => {
+    props.onChange({target: {name: props.name, value: value}});
     setDate(value);
   };
 

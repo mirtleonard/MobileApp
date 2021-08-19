@@ -1,5 +1,5 @@
 import { Button, Input, Card, Image } from 'react-native-elements';
-import { ScrollView, Text, StyleSheet } from 'react-native';
+import { ScrollView, Text, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import { Updates } from '../../Router.js';
 import DatePicker from '../date';
@@ -25,7 +25,10 @@ const App = (props) => {
         location: '',
         members: '',
         description: '',
+        beginingDate: new Date(Date.now()),
+        endDate: new Date(Date.now()),
     }
+  console.log(data);
   return (
     <Formik
         initialValues={data}
@@ -47,7 +50,7 @@ const App = (props) => {
           //parent =  parent.getParent()
           parent.jumpTo('Profile');
         } else
-          props.navigation.navigate('Meniu');
+          props.navigation.navigate('Dashboard');
         }).catch(error => console.log(error));
           Alert.alert("Eroare", "Nu ați introdus toate datele!");
       }}
@@ -100,7 +103,8 @@ const App = (props) => {
             <DatePicker
               value={values.beginingDate}
               mode="datetime"
-              onChange={handleChange('beginingDate')}
+              name='beginingDate'
+              onChange={handleChange}
             />
             <Card.Divider color='black'/>
             <Text style={styles.text}>
@@ -109,7 +113,8 @@ const App = (props) => {
             <DatePicker
               value={values.endDate}
               mode="datetime"
-              onChange={handleChange('endDate')}
+              name='endDate'
+              onChange={handleChange}
             />
             <Card.Divider color='black' />
             <Text style={styles.text}>

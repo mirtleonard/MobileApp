@@ -16,6 +16,10 @@ function getActivityReport(navigation, id) {
 
 const App = (props) => {
   const [reports, setReports] = React.useState('');
+  const [branch, setBranch] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [area, setArea] = React.useState('');
   const {updated} = React.useContext(Updates);
 
   React.useEffect(async () => {
@@ -42,20 +46,95 @@ const App = (props) => {
       </Button>
     </Card>
   );
+
+  function filter(data) {
+    let filtered = [];
+    for (const x in data) {
+      if (data[x].title.toUpperCase().includes(title.toUpperCase()))
+        if (data[x].branch.toUpperCase().includes(branch.toUpperCase()))
+          if (data[x].areas.toUpperCase().includes(area.toUpperCase()))
+            if (data[x].username.toUpperCase().includes(username.toUpperCase()))
+              filtered.push(data[x]);
+    }
+    return filtered;
+  }
+
   const renderItem = ({ item }) => (
       <Item item = { item } />
   );
 
-  return (
-    <ScrollView>
+  const Filter = () => (
+    <Card>
+        <Card.Title style={{textAlign: 'center'}}>
+          Filtre
+        </Card.Title>
+        <Input
+           onChangeText={setUsername}
+           value={username}
+           label="Creator"
+        />
+        <Input
+           onChangeText={setTitle}
+           value={title}
+           label="Titlu"
+        />
 
+        <Text style={styles.text}>
+          Ramură:
+        </Text>
+
+        <Picker
+          onValueChange={setBranch}
+          selectedValue={branch}
+          label = 'Ramură'
+        >
+          <Picker.Item label="Selectează" value="" />
+          <Picker.Item label="Lupișori" value="Lupișori" />
+          <Picker.Item label="Temerari" value="Temerari" />
+          <Picker.Item label="Exploratori" value="Exploratori" />
+          <Picker.Item label="Seniori" value="Seniori" />
+        </Picker>
+
+        <Text style={styles.text}>
+          Arie de dezvoltare:
+        </Text>
+
+        <Picker
+          onValueChange={setArea}
+          selectedValue={area}
+          label = 'Arie de dezvoltare'
+        >
+          <Picker.Item label="Intelectuală" value="intelectuală" />
+          <Picker.Item label="Spirituală" value="spirituală" />
+          <Picker.Item label="Caracter" value="caracter" />
+          <Picker.Item label="Afectivă" value="afectivă" />
+          <Picker.Item label="Socială" value="socială" />
+          <Picker.Item label="Fizică" value="fizică" />
+          <Picker.Item label="Selectează" value="" />
+        </Picker>
+
+      </Card>
+  );
+
+  return (
+    <View>
       <FlatList
-        data = { reports }
+        ListHeaderComponent={Filter}
+        data = { filter(reports) }
         renderItem = { renderItem }
       />
-    </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  text:{
+    marginLeft: 10,
+    fontWeight: 'bold',
+    fontSize: 17,
+    color: '#8f989f',
+  }
+});
 
 
 export default App;
