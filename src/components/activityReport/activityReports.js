@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useState } from "react";
 import { Updates } from '../../Router.js';
-import { Button, Card } from 'react-native-elements';
-import { View, FlatList, Text } from "react-native";
+import { Picker } from '@react-native-picker/picker';
+import { Button, Card, Input } from 'react-native-elements';
+import { View, FlatList, Text, StyleSheet, ScrollView } from "react-native";
 
 function getActivityReport(navigation, id) {
     axios
@@ -14,8 +15,9 @@ function getActivityReport(navigation, id) {
 }
 
 const App = (props) => {
-  const [reports, setReports] = React.useState();
+  const [reports, setReports] = React.useState('');
   const {updated} = React.useContext(Updates);
+
   React.useEffect(async () => {
     try {
         axios.get('http://192.168.1.9:8000/api/activityReport')
@@ -41,16 +43,19 @@ const App = (props) => {
     </Card>
   );
   const renderItem = ({ item }) => (
-    <Item item = { item } />
+      <Item item = { item } />
   );
+
   return (
-    <View>
+    <ScrollView>
+
       <FlatList
         data = { reports }
         renderItem = { renderItem }
       />
-    </View>
+    </ScrollView>
   );
 }
+
 
 export default App;

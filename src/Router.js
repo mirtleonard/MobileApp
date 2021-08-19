@@ -83,9 +83,9 @@ const CustomDrawer = (props) => {
 const MyDrawer = () => {
   return(
     <Drawer.Navigator screenOptions = {{headerShow: false}} drawerContent={(props) => <CustomDrawer {...props} />} >
-      <Drawer.Screen name="Profile" component={ Home } />
-      <Drawer.Screen name="CreateReport" component={ CreateReport } />
-      <Drawer.Screen name="ViewReports" component={ ViewReports } />
+      <Drawer.Screen name="Profile" component={ Home } options={{drawerLabel:'Profil'}} />
+      <Drawer.Screen name="CreateReport" component={ CreateReport } options={{drawerLabel:'Adaugă raport'}} />
+      <Drawer.Screen name="ViewReports" component={ ViewReports } options={{drawerLabel:'Vezi rapoarte'}} />
     </Drawer.Navigator>
   )
 }
@@ -98,7 +98,7 @@ const MyStack = () => {
     {
       user.token ? (
         <Stack.Navigator screenOptions = {{headerShow: false}} >
-          <Stack.Screen name="Meniu" component={MyDrawer} />
+          <Stack.Screen name="Dashboard" component={MyDrawer} />
           <Stack.Screen name="ViewActivityReport" component={ ActivityReport } />
           <Stack.Screen name="ViewEventReport" component={ EventReport } />
           <Stack.Screen name="EditActivityReport" component={EditActivityReport} />

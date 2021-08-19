@@ -3,9 +3,9 @@ import axios from 'axios';
 import styles from './css.js';
 import { AuthDispatch } from '../../Router.js';;
 import * as SecureStore from 'expo-secure-store';
-import { Button, Card, Text } from 'react-native-elements';
+import { Button, Card, Text, Input } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
-import { TextInput, View, AsyncStorage, Alert } from 'react-native';
+import { View, AsyncStorage, Alert } from 'react-native';
 
 
 async function signIn(name, user_password, dispatch) {
@@ -36,14 +36,12 @@ const Login = ({ navigation }) => {
   return(
     <View style={styles.container}>
       <Card>
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Nume"
           onChangeText={setName }
           value={name}
         />
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Parola"
           onChangeText={setPassword}
           secureTextEntry={true}
@@ -51,7 +49,7 @@ const Login = ({ navigation }) => {
         />
         <Button
           title = 'Login'
-          style = {styles.btnEnter}
+          buttonStyle = {styles.btnEnter}
           onPress = {async () => signIn(name, password, dispatch)}
         />
       </Card>

@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   btnEnter: {
     justifyContent : 'center',
     flexDirection: 'row',
-    backgroundColor: '#42BAF8',
+    backgroundColor: '#5BC0DE',
     alignItems: 'center',
     marginLeft: 15,
     marginRight: 15,

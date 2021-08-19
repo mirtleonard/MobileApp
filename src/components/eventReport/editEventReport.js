@@ -1,8 +1,8 @@
 import { Button, Input, Card, Image } from 'react-native-elements';
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
-import  DatePicker from 'react-native-datepicker';
 import { Updates } from '../../Router.js';
+import DatePicker from '../date';
 import { Formik } from 'formik';
 import axios from 'axios';
 import React from 'react';
@@ -77,6 +77,7 @@ const App = (props) => {
                value={values.eventType}
                label='Tip de eveniment'
             />
+
             <Input
                onChangeText={handleChange('members')}
                value={values.members}
@@ -93,7 +94,29 @@ const App = (props) => {
                label='Descriere'
                multiline
             />
+            <Text style={styles.text}>
+              Data de început:
+            </Text>
+            <DatePicker
+              value={values.beginingDate}
+              mode="datetime"
+              onChange={handleChange('beginingDate')}
+            />
+            <Card.Divider color='black'/>
+            <Text style={styles.text}>
+              Data de sfârșit:
+            </Text>
+            <DatePicker
+              value={values.endDate}
+              mode="datetime"
+              onChange={handleChange('endDate')}
+            />
+            <Card.Divider color='black' />
+            <Text style={styles.text}>
+              Imagini:
+            </Text>
             <Button
+              buttonStyle = {{padding: 20}}
               title = 'choose image'
               type='clear'
               onPress = {() => ImagePicker.launchImageLibrary({selectionLimit: 0, mediaType: 'photo',},
@@ -107,6 +130,7 @@ const App = (props) => {
               })}
               />
             <Button
+              buttonStyle={{backgroundColor: '#55a0d9'}}
               onPress={handleSubmit}
               title = 'Adaugă Raport'
             />
@@ -116,5 +140,14 @@ const App = (props) => {
     </Formik>
   );
 }
+
+const styles = StyleSheet.create({
+  text:{
+    marginLeft: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#8f989f',
+  }
+});
 
 export default App;

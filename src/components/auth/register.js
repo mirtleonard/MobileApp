@@ -64,7 +64,7 @@ const Register = ({ navigation }) => {
             <Picker.Item label="Seniori" value="Seniori" />
           </Picker>
 
-           <Button onPress={handleSubmit} title="Submit" />
+           <Button buttonStyle={{backgroundColor: '#5BC0DE'}} onPress={handleSubmit} title="Submit" />
         </Card>
        </View>
      )}

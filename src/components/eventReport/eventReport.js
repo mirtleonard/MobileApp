@@ -68,7 +68,7 @@ const App = (props) => {
               paddingHorizontal: 10,
               paddingVertical: 7,
               borderRadius: 5,
-              backgroundColor: "#AEDEF4",
+              backgroundColor: '#55a0d9',
 
             }}
             onPress={() => {

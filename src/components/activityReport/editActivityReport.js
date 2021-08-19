@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Formik } from 'formik';
 import FormData from 'form-data';
+import DatePicker from '../date';
 import React, { useState } from 'react';
 import { Dates } from '../../Router.js';
 import { Updates } from '../../Router.js';
-import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'react-native-image-picker';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
@@ -39,6 +39,7 @@ const App = (props) => {
     <Formik
        initialValues={data}
        onSubmit={(values) => {
+         console.log(values.date, 'aha');
         axios({method: id ? 'put' : 'post', url: 'http://192.168.1.9:8000/api/activityReport/' + id, data : values})
         .then(response => {
           if (form._parts[0]) {
@@ -73,6 +74,11 @@ const App = (props) => {
                 style={{width:70, height:70}} />
             </Card.Title>
             <Card.Divider/>
+
+            <Text style={styles.text}>
+              Ramură:
+            </Text>
+
             <Picker
               onValueChange={handleChange('branch')}
               selectedValue={values.branch}
@@ -84,39 +90,35 @@ const App = (props) => {
               <Picker.Item label="Seniori" value="Seniori" />
             </Picker>
 
+            <Text style={styles.text}>
+              Arie de dezvoltare:
+            </Text>
+
             <Picker
               onValueChange={handleChange('areas')}
               selectedValue={values.areas}
               label = 'Arie de dezvoltare'
-              style={{
 
-              }}
             >
-              <Picker.Item label="intelectuală" value="intelectuală" />
-              <Picker.Item label="spirituală" value="spirituală" />
-              <Picker.Item label="caracter" value="caracter" />
-              <Picker.Item label="afectivă" value="afectivă" />
-              <Picker.Item label="socială" value="socială" />
-              <Picker.Item label="fizică" value="fizică" />
+              <Picker.Item label="Intelectuală" value="intelectuală" />
+              <Picker.Item label="Spirituală" value="spirituală" />
+              <Picker.Item label="Caracter" value="caracter" />
+              <Picker.Item label="Afectivă" value="afectivă" />
+              <Picker.Item label="Socială" value="socială" />
+              <Picker.Item label="Fizică" value="fizică" />
             </Picker>
-
             <Input
                onChangeText={handleChange('title')}
                value={values.title}
                label='Titlu'
             />
-            <Text style={{
-              marginLeft: 10,
-              fontWeight: 'bold',
-              color: '#a19594',
-            }}>
+            <Text style={styles.text}>
               Data:
             </Text>
             <DatePicker
-              date={values.date}
+              value={values.date}
               mode="date"
-              placeholder="Data"
-              onDateChange={handleChange('date')}
+              onChange={handleChange('date')}
             />
             <Input
                onChangeText={handleChange('location')}
@@ -170,6 +172,9 @@ const App = (props) => {
                label="Îmbunătățiri"
                multiline
             />
+            <Text style={styles.text}>
+              Imagini:
+            </Text>
             <Button
               title='choose image'
               type='clear'
@@ -184,6 +189,7 @@ const App = (props) => {
               })}
             />
             <Button
+                buttonStyle={{backgroundColor: '#55a0d9'}}
                 onPress={handleSubmit}
                 title="Adaugă Raport"
             />
@@ -193,5 +199,14 @@ const App = (props) => {
     </Formik>
   );
 }
+
+const styles = StyleSheet.create({
+  text:{
+    marginLeft: 10,
+    fontWeight: 'bold',
+    fontSize: 17,
+    color: '#8f989f',
+  }
+});
 
 export default App;

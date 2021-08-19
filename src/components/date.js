@@ -1,47 +1,50 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text, Button, Platform} from 'react-native';
+import React from 'react';
+import { Button } from 'react-native-elements';
+import DateTimePicker from 'react-native-date-picker';
+import {StyleSheet, View, Text, Platform} from 'react-native';
 
 
-const App = () => {
-  const [isPickerShow, setIsPickerShow] = useState(false);
-  const [date, setDate] = useState(new Date(Date.now()));
+const App = (props) => {
+  const [isPickerShow, setIsPickerShow] = React.useState(false);
+  const [date, setDate] = React.useState(new Date(Date.now()));
 
-  const showPicker = () => {
-    setIsPickerShow(true);
+  const changePickerState = () => {
+    setIsPickerShow(!isPickerShow);
   };
 
-  const onChange = (event, value) => {
+  const onChange = (value) => {
     setDate(value);
-    if (Platform.OS === 'android') {
-      setIsPickerShow(false);
-    }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Display the selected date */}
-      <View style={styles.pickedDateContainer}>
-        <Text style={styles.pickedDate}>{date.toUTCString()}</Text>
-      </View>
-
-      {/* The button that used to trigger the date picker */}
-      {!isPickerShow && (
-        <View style={styles.btnContainer}>
-          <Button title="Show Picker" color="purple" onPress={showPicker} />
+    <View>
+    {!isPickerShow && (
+      <View style={styles.container}>
+        {/* Display the selected date */}
+        <View style={styles.pickedDateContainer}>
+          <Text style={styles.pickedDate}>{date.toUTCString()}</Text>
         </View>
-      )}
 
+        {/* The button that used to trigger the date picker */}
+        <View style={styles.btnContainer}>
+          <Button type="clear" title="Schimbă Data" onPress={changePickerState} />
+        </View>
+      </View>
+    )}
       {/* The date picker */}
-      {isPickerShow && (
+    {isPickerShow && (
+      <View>
         <DateTimePicker
-          value={date}
-          mode={'date'}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          is24Hour={true}
-          onChange={onChange}
+          date={date}
+          mode={props.mode}
+          onDateChange={onChange}
           style={styles.datePicker}
         />
-      )}
+        <View style={styles.btnContainer}>
+          <Button type="clear" title="Done" onPress={changePickerState} />
+        </View>
+      </View>
+    )}
     </View>
   );
 };
@@ -55,19 +58,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    padding: 50,
+    padding: 5,
   },
   pickedDateContainer: {
-    padding: 20,
-    backgroundColor: '#eee',
     borderRadius: 10,
   },
   pickedDate: {
-    fontSize: 18,
+    fontSize: 17,
     color: 'black',
   },
+  button: {
+
+  },
   btnContainer: {
-    padding: 30,
+    padding: 10,
   },
   // This only works on iOS
   datePicker: {
