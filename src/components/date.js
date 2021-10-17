@@ -51,8 +51,6 @@ const App = (props) => {
   );
 };
 
-// just add some styles to make our app look more beautiful
-// This is not the focus of this article
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
